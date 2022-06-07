@@ -1,6 +1,8 @@
 import s from './Searchbar.module.css';
 import { FaSearch } from 'react-icons/fa';
+import 'react-toastify/dist/ReactToastify.css';
 import { Component } from 'react';
+import { toast } from 'react-toastify';
 
 class Searchbar extends Component {
   state = {
@@ -13,6 +15,8 @@ class Searchbar extends Component {
   handleSubmit = e => {
     e.preventDefault();
     if (this.state.seachImgs.trim() === '') {
+      toast.error('Imput something');
+
       return;
     }
 
