@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { Component } from 'react';
 import s from './App.module.css';
 import Button from 'components/Button';
-import fetchImages from '../../service/Api';
+import FetchImages from '../../service/Api';
 import Loader from 'components/Loader';
 
 class App extends Component {
@@ -21,7 +21,7 @@ class App extends Component {
 
     if (prevState.seach !== seach || prevState.page !== page) {
       this.setState({ status: 'pending' });
-      fetchImages(seach, page)
+      FetchImages(seach, page)
         .then(data =>
           this.setState({ imagesArr: [...imagesArr, data], status: 'resolved' })
         )
@@ -47,8 +47,8 @@ class App extends Component {
     if (status === 'idle') {
       return (
         <div className={s.app}>
+          <Searchbar hendlerForm={this.hendlerFormSubmit} />
           <ToastContainer autoClose={1500} />
-          <Searchbar hendlerForm={this.hendlerFormSubmit} />;
         </div>
       );
     }
