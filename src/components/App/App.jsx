@@ -5,24 +5,28 @@ import { Component } from 'react';
 import s from './App.module.css';
 import Button from 'components/Button';
 import fetchImages from '../../service/Api';
+import Loader from 'components/Loader';
 
 class App extends Component {
   state = {
     imagesArr: [],
     seach: '',
     page: 1,
-
     error: null,
+    status: 'idle',
   };
 
   componentDidUpdate(prevProps, prevState) {
     const { seach, page, imagesArr } = this.state;
 
     if (prevState.seach !== seach || prevState.page !== page) {
+      this.setState({ status: 'pending' });
       fetchImages(seach, page)
-        .then(data => this.setState({ imagesArr: [...imagesArr, data] }))
+        .then(data =>
+          this.setState({ imagesArr: [...imagesArr, data], status: 'resolved' })
+        )
         .catch(error => {
-          this.setState({ error: error });
+          this.setState({ error: error, status: 'rejected' });
         });
     }
   }
@@ -31,32 +35,53 @@ class App extends Component {
     this.setState({ seach: data, imagesArr: [], page: 1 });
   };
 
-  paginationFromBtn = () => {
+  handleClickBtn = e => {
     this.setState(prevState => {
       return { page: prevState.page + 1 };
     });
   };
 
   render() {
-    const { imagesArr, error } = this.state;
-    return (
-      <div className={s.App}>
-        <ToastContainer autoClose={1500} />
-        <Searchbar hendlerForm={this.hendlerFormSubmit} />
-        {error && <p>No sach seach: {error.message}</p>}
-        <ImageGallery imagesArr={imagesArr}>
-          <Button pagin={this.paginationFromBtn} />
-        </ImageGallery>
-      </div>
+    const { imagesArr, error, status } = this.state;
 
-      /* 
-      
-    
-   
-      <Loader />
-     
-      <Modal /> */
-    );
+    if (status === 'idle') {
+      return (
+        <div className={s.app}>
+          <ToastContainer autoClose={1500} />
+          <Searchbar hendlerForm={this.hendlerFormSubmit} />;
+        </div>
+      );
+    }
+    if (status === 'pending') {
+      return (
+        <div className={s.app}>
+          <Searchbar hendlerForm={this.hendlerFormSubmit} />
+          <ToastContainer autoClose={1500} />
+          {imagesArr.length !== 0 && <ImageGallery imagesArr={imagesArr} />}
+          <Loader />
+        </div>
+      );
+    }
+    if (status === 'rejected') {
+      return (
+        <div className={s.app}>
+          <Searchbar hendlerForm={this.hendlerFormSubmit} />
+          <Loader />
+          <p className={s.error}>No such images: {error.message}</p>
+        </div>
+      );
+    }
+    if (status === 'resolved') {
+      return (
+        <div className={s.app}>
+          <Searchbar hendlerForm={this.hendlerFormSubmit} />
+          <ToastContainer autoClose={1500} />
+          <ImageGallery imagesArr={imagesArr}>
+            <Button click={this.handleClickBtn} />
+          </ImageGallery>
+        </div>
+      );
+    }
   }
 }
 

@@ -1,9 +1,8 @@
 import s from './Button.module.css';
 
-const Button = ({ pagin }) => {
+const Button = ({ click }) => {
   return (
-    <button className={s.Button} onClick={() => pagin()}>
-      {' '}
+    <button className={s.Button} onClick={click}>
       Load more
     </button>
   );
