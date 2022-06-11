@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { Component } from 'react';
 import s from './App.module.css';
 import Button from 'components/Button';
-import FetchImages from '../../service/Api';
+import FetchImages from '../../service/api';
 import Loader from 'components/Loader';
 
 class App extends Component {
@@ -44,44 +44,42 @@ class App extends Component {
   render() {
     const { imagesArr, error, status } = this.state;
 
-    if (status === 'idle') {
-      return (
-        <div className={s.app}>
-          <Searchbar hendlerForm={this.hendlerFormSubmit} />
-          <ToastContainer autoClose={1500} />
-        </div>
-      );
-    }
-    if (status === 'pending') {
-      return (
-        <div className={s.app}>
-          <Searchbar hendlerForm={this.hendlerFormSubmit} />
-          <ToastContainer autoClose={1500} />
-          {imagesArr.length !== 0 && <ImageGallery imagesArr={imagesArr} />}
-          <Loader />
-        </div>
-      );
-    }
-    if (status === 'rejected') {
-      return (
-        <div className={s.app}>
-          <Searchbar hendlerForm={this.hendlerFormSubmit} />
-          <Loader />
-          <p className={s.error}>No such images: {error.message}</p>
-        </div>
-      );
-    }
-    if (status === 'resolved') {
-      return (
-        <div className={s.app}>
-          <Searchbar hendlerForm={this.hendlerFormSubmit} />
-          <ToastContainer autoClose={1500} />
-          <ImageGallery imagesArr={imagesArr}>
-            <Button click={this.handleClickBtn} />
-          </ImageGallery>
-        </div>
-      );
-    }
+    return (
+      <>
+        {status === 'idle' && (
+          <div className={s.app}>
+            <Searchbar hendlerForm={this.hendlerFormSubmit} />
+            <ToastContainer autoClose={1500} />
+          </div>
+        )}
+
+        {status === 'pending' && (
+          <div className={s.app}>
+            <Searchbar hendlerForm={this.hendlerFormSubmit} />
+            <ToastContainer autoClose={1500} />
+            {imagesArr.length !== 0 && <ImageGallery imagesArr={imagesArr} />}
+            <Loader />
+          </div>
+        )}
+        {status === 'rejected' && (
+          <div className={s.app}>
+            <Searchbar hendlerForm={this.hendlerFormSubmit} />
+            <Loader />
+            <p className={s.error}>No such images: {error.message}</p>
+          </div>
+        )}
+
+        {status === 'resolved' && (
+          <div className={s.app}>
+            <Searchbar hendlerForm={this.hendlerFormSubmit} />
+            <ToastContainer autoClose={1500} />
+            <ImageGallery imagesArr={imagesArr}>
+              <Button click={this.handleClickBtn} />
+            </ImageGallery>
+          </div>
+        )}
+      </>
+    );
   }
 }
 
