@@ -35,11 +35,11 @@ class App extends Component {
     }
   }
   togleModal = data => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
-
     if (data !== undefined) {
       this.setState({ modalData: data });
     }
+
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
   hendlerFormSubmit = data => {
@@ -64,9 +64,8 @@ class App extends Component {
         )}
         <div className={s.app}>
           <ToastContainer autoClose={1500} />
-          {(status === 'idle' || status === 'resolved') && (
-            <Searchbar hendlerForm={this.hendlerFormSubmit} />
-          )}
+
+          <Searchbar hendlerForm={this.hendlerFormSubmit} />
 
           {status === 'pending' && <Loader />}
 
