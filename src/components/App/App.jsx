@@ -1,11 +1,13 @@
-import ImageGallery from 'components/ImageGallery';
+import ImageGallery from '../ImageGallery/ImageGallery';
 import Searchbar from 'components/Searchbar';
 import { ToastContainer } from 'react-toastify';
 import { Component } from 'react';
+import Modal from 'components/Modal';
 import s from './App.module.css';
 import Button from 'components/Button';
 import FetchImages from '../../service/api';
 import Loader from 'components/Loader';
+import PropTypes from 'prop-types';
 
 class App extends Component {
   state = {
@@ -13,6 +15,8 @@ class App extends Component {
     seach: '',
     page: 1,
     error: null,
+    showModal: false,
+    modalData: [],
     status: 'idle',
   };
 
@@ -30,6 +34,13 @@ class App extends Component {
         });
     }
   }
+  togleModal = data => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+
+    if (data !== undefined) {
+      this.setState({ modalData: data });
+    }
+  };
 
   hendlerFormSubmit = data => {
     this.setState({ seach: data, imagesArr: [], page: 1 });
@@ -42,10 +53,16 @@ class App extends Component {
   };
 
   render() {
-    const { imagesArr, error, status } = this.state;
+    const { imagesArr, error, status, modalData, showModal } = this.state;
 
     return (
       <>
+        {showModal && (
+          <Modal onClose={this.togleModal}>
+            <img src={modalData[0]} alt={modalData[1]} />
+          </Modal>
+        )}
+
         {status === 'idle' && (
           <div className={s.app}>
             <Searchbar hendlerForm={this.hendlerFormSubmit} />
@@ -73,14 +90,20 @@ class App extends Component {
           <div className={s.app}>
             <Searchbar hendlerForm={this.hendlerFormSubmit} />
             <ToastContainer autoClose={1500} />
-            <ImageGallery imagesArr={imagesArr}>
-              <Button click={this.handleClickBtn} />
-            </ImageGallery>
+            <ImageGallery
+              imagesArr={imagesArr}
+              togl={this.togleModal}
+              click={this.handleClickBtn}
+            />
           </div>
         )}
       </>
     );
   }
 }
+
+Modal.propType = {
+  modalData: PropTypes.arrayOf(PropTypes.string.isRequired),
+};
 
 export default App;

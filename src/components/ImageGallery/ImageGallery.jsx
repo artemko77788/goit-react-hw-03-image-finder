@@ -1,19 +1,20 @@
 import s from './ImageGallery.module.css';
-import ImageGalleryItem from 'components/ImageGalleryItem';
+import ImageGalleryItem from 'components/ImageGallery/ImageGalleryItem';
 import PropTypes from 'prop-types';
+import Button from 'components/Button';
 
-const ImageGallery = ({ imagesArr, children }) => {
+const ImageGallery = ({ imagesArr, togl, click }) => {
   return (
     <>
       {' '}
       <ul className={s.ImageGallery}>
         {imagesArr.map(element => {
           return element.map(hits => {
-            return <ImageGalleryItem item={hits} key={hits.id} />;
+            return <ImageGalleryItem item={hits} key={hits.id} togl={togl} />;
           });
         })}
       </ul>
-      {children}
+      <Button click={() => click()} />
     </>
   );
 };
