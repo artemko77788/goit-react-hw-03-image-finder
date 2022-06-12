@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { Component } from 'react';
 import Modal from 'components/Modal';
 import s from './App.module.css';
-import Button from 'components/Button';
+
 import FetchImages from '../../service/api';
 import Loader from 'components/Loader';
 import PropTypes from 'prop-types';
@@ -62,41 +62,26 @@ class App extends Component {
             <img src={modalData[0]} alt={modalData[1]} />
           </Modal>
         )}
+        <div className={s.app}>
+          <ToastContainer autoClose={1500} />
+          {(status === 'idle' || status === 'resolved') && (
+            <Searchbar hendlerForm={this.hendlerFormSubmit} />
+          )}
 
-        {status === 'idle' && (
-          <div className={s.app}>
-            <Searchbar hendlerForm={this.hendlerFormSubmit} />
-            <ToastContainer autoClose={1500} />
-          </div>
-        )}
+          {status === 'pending' && <Loader />}
 
-        {status === 'pending' && (
-          <div className={s.app}>
-            <Searchbar hendlerForm={this.hendlerFormSubmit} />
-            <ToastContainer autoClose={1500} />
-            {imagesArr.length !== 0 && <ImageGallery imagesArr={imagesArr} />}
-            <Loader />
-          </div>
-        )}
-        {status === 'rejected' && (
-          <div className={s.app}>
-            <Searchbar hendlerForm={this.hendlerFormSubmit} />
-            <Loader />
+          {status === 'rejected' && (
             <p className={s.error}>No such images: {error.message}</p>
-          </div>
-        )}
+          )}
 
-        {status === 'resolved' && (
-          <div className={s.app}>
-            <Searchbar hendlerForm={this.hendlerFormSubmit} />
-            <ToastContainer autoClose={1500} />
+          {(status === 'resolved' || imagesArr.length !== 0) && (
             <ImageGallery
               imagesArr={imagesArr}
               togl={this.togleModal}
               click={this.handleClickBtn}
             />
-          </div>
-        )}
+          )}
+        </div>
       </>
     );
   }

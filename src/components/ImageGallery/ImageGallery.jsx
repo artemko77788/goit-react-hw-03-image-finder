@@ -6,7 +6,6 @@ import Button from 'components/Button';
 const ImageGallery = ({ imagesArr, togl, click }) => {
   return (
     <>
-      {' '}
       <ul className={s.ImageGallery}>
         {imagesArr.map(element => {
           return element.map(hits => {
@@ -14,7 +13,7 @@ const ImageGallery = ({ imagesArr, togl, click }) => {
           });
         })}
       </ul>
-      <Button click={() => click()} />
+      <Button click={e => click(e)} />
     </>
   );
 };
